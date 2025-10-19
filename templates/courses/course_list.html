@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}All Courses - EduSmart{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="py-5 bg-light">
+    <div class="container px-4">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1 class="display-5 fw-bold text-dark mb-3">All Courses</h1>
+                <p class="lead text-muted">Discover thousands of courses to advance your career</p>
+            </div>
+            <div class="col-lg-4 text-end">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search courses..." id="searchInput">
+                    <button class="btn btn-primary" type="button">
+                        <i data-feather="search"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Filters Section -->
+<section class="py-4 bg-white">
+    <div class="container px-4">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <div class="d-flex flex-wrap gap-2">
+                    <span class="small text-muted">Filter by:</span>
+                    {% for category in categories %}
+                    <a href="?category={{ category.id }}" class="btn btn-outline-primary btn-sm {% if category.id|stringformat:'s' in request.GET.category %}active{% endif %}">
+                        {{ category.name }}
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="col-md-6 text-md-end mt-3 mt-md-0">
+                <div class="d-flex justify-content-md-end gap-2">
+                    <select class="form-select form-select-sm" style="width: auto;">
+                        <option>Level</option>
+                        <option>Beginner</option>
+                        <option>Intermediate</option>
+                        <option>Advanced</option>
+                    </select>
+                    <select class="form-select form-select-sm" style="width: auto;">
+                        <option>Price</option>
+                        <option>Free</option>
+                        <option>Paid</option>
+                    </select>
+                    <select class="form-select form-select-sm" style="width: auto;">
+                        <option>Sort</option>
+                        <option>Newest</option>
+                        <option>Popular</option>
+                        <option>Price Low to High</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Courses Grid -->
+<section class="py-5">
+    <div class="container px-4">
+        {% if courses %}
+        <div class="row g-4" id="coursesGrid">
+            {% for course in courses %}
+            <div class="col-lg-4 col-md-6">
+                <div class="card h-100 border-0 shadow-sm course-card overflow-hidden">
+                    {% if course.thumbnail %}
+                        <img src="{{ course.thumbnail.url }}" class="card-img-top" alt="{{ course.title }}" style="height: 200px; object-fit: cover;">
+                    {% else %}
+                        <div class="bg-primary text-white d-flex align-items-center justify-content-center" style="height: 200px;">
+                            <i class="fas fa-book fa-3x"></i>
+                        </div>
+                    {% endif %}
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <span class="badge bg-primary bg-opacity-10 text-primary">{{ course.level|title }}</span>
+                            <span class="text-muted small">
+                                <i data-feather="clock" class="me-1"></i>{{ course.duration }}
+                            </span>
+                        </div>
+                        <h5 class="card-title fw-semibold">{{ course.title|truncatewords:6 }}</h5>
+                        <p class="card-text text-muted small">{{ course.short_description|truncatewords:15 }}</p>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="d-flex align-items-center">
+                                <i data-feather="user" class="text-muted me-1" style="width: 16px; height: 16px;"></i>
+                                <small class="text-muted">{{ course.instructor.first_name }}</small>
+                            </div>
+                            {% if course.price > 0 %}
+                                <span class="text-primary fw-bold">${{ course.price }}</span>
+                            {% else %}
+                                <span class="badge bg-success">Free</span>
+                            {% endif %}
+                        </div>
+                        <a href="{{ course.get_absolute_url }}" class="btn btn-primary w-100">View Details</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if courses.has_other_pages %}
+        <nav class="mt-5">
+            <ul class="pagination justify-content-center">
+                {% if courses.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ courses.previous_page_number }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">Previous</a>
+                    </li>
+                {% endif %}
+                
+                {% for num in courses.paginator.page_range %}
+                    {% if courses.number == num %}
+                        <li class="page-item active">
+                            <span class="page-link">{{ num }}</span>
+                        </li>
+                    {% elif num > courses.number|add:'-3' and num < courses.number|add:'3' %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ num }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">{{ num }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if courses.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ courses.next_page_number }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">Next</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+        {% else %}
+        <div class="text-center py-5">
+            <i class="fas fa-search fa-5x text-muted mb-4"></i>
+            <h3 class="text-muted">No courses found</h3>
+            <p class="text-muted">Try adjusting your search or filter criteria</p>
+            <a href="{% url 'course_list' %}" class="btn btn-primary">Browse All Courses</a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('searchInput').addEventListener('input', function() {
+    const searchTerm = this.value;
+    // Add search functionality here
+    console.log('Searching for:', searchTerm);
+});
+</script>
+{% endblock %}

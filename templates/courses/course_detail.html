@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ course.title }} - EduSmart{% endblock %}
+
+{% block content %}
+<div class="container px-4 py-5">
+    <div class="row g-4">
+        <!-- Main Course Info -->
+        <div class="col-lg-8">
+            <!-- Course Header -->
+            <div class="card border-0 shadow-sm mb-4">
+                {% if course.thumbnail %}
+                    <img src="{{ course.thumbnail.url }}" class="card-img-top" alt="{{ course.title }}" style="height: 300px; object-fit: cover;">
+                {% endif %}
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <span class="badge bg-primary bg-opacity-10 text-primary me-2">{{ course.level|title }}</span>
+                            <span class="badge bg-success bg-opacity-10 text-success">{{ course.category.name }}</span>
+                        </div>
+                        <span class="text-primary h4 fw-bold">
+                            {% if course.price > 0 %}
+                                ${{ course.price }}
+                            {% else %}
+                                <span class="badge bg-success fs-6">Free</span>
+                            {% endif %}
+                        </span>
+                    </div>
+                    <h1 class="display-5 fw-bold mb-3">{{ course.title }}</h1>
+                    <p class="lead text-muted mb-4">{{ course.short_description }}</p>
+                    
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <div class="d-flex align-items-center">
+                                <i data-feather="user" class="text-primary me-2"></i>
+                                <div>
+                                    <strong>{{ course.instructor.first_name }} {{ course.instructor.last_name }}</strong>
+                                    <small class="text-muted d-block">Instructor</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-flex align-items-center">
+                                <i data-feather="clock" class="text-primary me-2"></i>
+                                <div>
+                                    <strong>{{ course.duration }}</strong>
+                                    <small class="text-muted d-block">Duration</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-flex align-items-center">
+                                <i data-feather="book-open" class="text-primary me-2"></i>
+                                <div>
+                                    <strong>{{ course.total_lessons }}</strong>
+                                    <small class="text-muted d-block">Lessons</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if user.is_authenticated and user.user_type == 'student' %}
+                        {% if enrollment %}
+                            <div class="alert alert-success d-flex align-items-center">
+                                <i data-feather="check-circle" class="me-2"></i>
+                                <strong>Enrolled!</strong> You're already enrolled in this course.
+                                <a href="{% url 'course_lessons' course.id %}" class="btn btn-success ms-auto">Continue Learning</a>
+                            </div>
+                        {% else %}
+                            <form method="post" action="{% url 'enroll_course' course.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-primary btn-lg px-5">
+                                    <i data-feather="play-circle" class="me-2"></i>Enroll Now
+                                </button>
+                            </form>
+                        {% endif %}
+                    {% else %}
+                        <a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-primary btn-lg px-5">
+                            <i data-feather="log-in" class="me-2"></i>Login to Enroll
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Course Description -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0">
+                    <h4 class="fw-bold mb-0"><i data-feather="info" class="me-2"></i>Course Description</h4>
+                </div>
+                <div class="card-body">
+                    <div class="course-description">{{ course.description|linebreaks }}</div>
+                </div>
+            </div>
+
+            <!-- What You'll Learn -->
+            <div class="card border-0 shadow-sm mt-4">
+                <div class="card-header bg-white border-0">
+                    <h5 class="fw-bold mb-0"><i data-feather="check-square" class="me-2"></i>What You'll Learn</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i data-feather="check" class="text-success me-2" style="width: 16px; height: 16px;"></i>Master fundamental concepts</li>
+                        <li class="mb-2"><i data-feather="check" class="text-success me-2" style="width: 16px; height: 16px;"></i>Build real-world projects</li>
+                        <li class="mb-2"><i data-feather="check" class="text-success me-2" style="width: 16px; height: 16px;"></i>Earn completion certificate</li>
+                        <li class="mb-2"><i data-feather="check" class="text-success me-2" style="width: 16px; height: 16px;"></i>Lifetime access to materials</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Instructor Info -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white border-0">
+                    <h6 class="fw-bold mb-0">Instructor</h6>
+                </div>
+                <div class="card-body text-center">
+                    {% if course.instructor.profile_picture %}
+                        <img src="{{ course.instructor.profile_picture.url }}" class="rounded-circle mb-3" width="80" height="80" alt="{{ course.instructor.first_name }}">
+                    {% endif %}
+                    <h6 class="fw-bold">{{ course.instructor.first_name }} {{ course.instructor.last_name }}</h6>
+                    <p class="text-muted small">{{ course.instructor.user_type|title }}</p>
+                    {% if course.instructor.bio %}
+                        <p class="text-muted small">{{ course.instructor.bio|truncatewords:15 }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Course Stats -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0">
+                    <h6 class="fw-bold mb-0">Course Stats</h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="text-muted">Students</span>
+                        <strong class="text-primary">{{ course.enrollments_count }}</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="text-muted">Rating</span>
+                        <div class="d-flex align-items-center">
+                            <i data-feather="star" class="text-warning me-1"></i>
+                            <span class="fw-bold">4.8</span>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted">Lessons</span>
+                        <strong>{{ course.total_lessons }}</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

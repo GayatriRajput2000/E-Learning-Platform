@@ -1,0 +1,245 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Hero Section -->
+<section id="home" class="py-5 bg-primary bg-opacity-10">
+    <div class="container px-4">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-5 mb-lg-0 animate-fade-in">
+                <h1 class="display-4 fw-bold text-dark mb-4">
+                    Learn Without <span class="text-primary">Limits</span>
+                </h1>
+                <p class="lead text-muted mb-4">
+                    Access 5,000+ online courses from 200+ institutions. Gain new skills and advance your career with EduSmart.
+                </p>
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="{% url 'course_list' %}" class="btn btn-primary px-4 py-3 text-white">
+                        Explore Courses
+                    </a>
+                    <a href="#features" class="btn btn-outline-primary px-4 py-3">
+                        Watch Demo
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center animate-fade-in">
+                <img src="https://images.unsplash.com/photo-1524178232363-5493d3005f73?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                     alt="Learning Illustration" class="img-fluid rounded shadow-lg">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section id="features" class="py-5 bg-white">
+    <div class="container px-4">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold text-dark mb-3">Why Choose EduSmart?</h2>
+            <p class="lead text-muted">
+                We provide the best learning experience with cutting-edge technology and expert instructors
+            </p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4 text-center">
+                <div class="card border-0 bg-light h-100 p-4 hover-shadow">
+                    <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3 mx-auto" style="width: 80px; height: 80px;">
+                        <i data-feather="monitor" class="text-primary" style="width: 32px; height: 32px;"></i>
+                    </div>
+                    <h5 class="fw-semibold mb-3">Interactive Learning</h5>
+                    <p class="text-muted">
+                        Engage with interactive video lessons, quizzes, and hands-on projects for effective learning.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4 text-center">
+                <div class="card border-0 bg-light h-100 p-4 hover-shadow">
+                    <div class="bg-success bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3 mx-auto" style="width: 80px; height: 80px;">
+                        <i data-feather="award" class="text-success" style="width: 32px; height: 32px;"></i>
+                    </div>
+                    <h5 class="fw-semibold mb-3">Certification</h5>
+                    <p class="text-muted">
+                        Earn recognized certificates upon course completion to showcase your skills to employers.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4 text-center">
+                <div class="card border-0 bg-light h-100 p-4 hover-shadow">
+                    <div class="bg-warning bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3 mx-auto" style="width: 80px; height: 80px;">
+                        <i data-feather="clock" class="text-warning" style="width: 32px; height: 32px;"></i>
+                    </div>
+                    <h5 class="fw-semibold mb-3">Self-Paced</h5>
+                    <p class="text-muted">
+                        Learn at your own pace with 24/7 access to course materials and lifetime updates.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Popular Courses -->
+<section id="courses" class="py-5 bg-light">
+    <div class="container px-4">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold text-dark mb-3">Popular Courses</h2>
+            <p class="lead text-muted">
+                Browse our most popular courses across various categories
+            </p>
+        </div>
+        <div class="row g-4">
+            {% for course in featured_courses %}
+            <div class="col-lg-4 col-md-6">
+                <div class="card h-100 border-0 shadow-sm course-card overflow-hidden">
+                    {% if course.thumbnail %}
+                        <img src="{{ course.thumbnail.url }}" class="card-img-top" alt="{{ course.title }}" style="height: 200px; object-fit: cover;">
+                    {% else %}
+                        <div class="bg-primary text-white d-flex align-items-center justify-content-center" style="height: 200px;">
+                            <i class="fas fa-book fa-3x"></i>
+                        </div>
+                    {% endif %}
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <span class="badge bg-primary bg-opacity-10 text-primary">{{ course.level|title }}</span>
+                            <span class="text-muted small">
+                                <i data-feather="clock" class="me-1"></i>{{ course.duration }}
+                            </span>
+                        </div>
+                        <h5 class="card-title fw-semibold">{{ course.title }}</h5>
+                        <p class="card-text text-muted">{{ course.short_description|truncatewords:15 }}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center">
+                                <i data-feather="star" class="text-warning me-1"></i>
+                                <span class="text-dark">4.8 (1.2k)</span>
+                            </div>
+                            {% if course.price > 0 %}
+                                <span class="text-primary fw-bold">${{ course.price }}</span>
+                            {% else %}
+                                <span class="badge bg-success">Free</span>
+                            {% endif %}
+                        </div>
+                        <a href="{{ course.get_absolute_url }}" class="btn btn-primary w-100 mt-3">View Course</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center py-5">
+                <i class="fas fa-book fa-5x text-muted mb-4"></i>
+                <h3 class="text-muted">No courses available yet</h3>
+                <p class="text-muted">Check back soon for exciting new courses!</p>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-5">
+            <a href="{% url 'course_list' %}" class="btn btn-outline-primary px-4 py-3">
+                View All Courses
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Instructors Section -->
+<section id="instructors" class="py-5 bg-white">
+    <div class="container px-4">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold text-dark mb-3">Meet Our Instructors</h2>
+            <p class="lead text-muted">
+                Learn from industry experts with years of experience
+            </p>
+        </div>
+        <div class="row g-4">
+            <!-- Instructor Cards (Static for demo) -->
+            <div class="col-lg-3 col-md-6">
+                <div class="card border-0 bg-light h-100 text-center p-4 instructor-card">
+                    <div class="mx-auto mb-3" style="width: 80px; height: 80px; border-radius: 50%; overflow: hidden; border: 3px solid rgba(14,165,233,0.1);">
+                        <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" 
+                             class="w-100 h-100 object-fit-cover" alt="Instructor">
+                    </div>
+                    <h6 class="fw-semibold mb-2">Dr. Sarah Johnson</h6>
+                    <p class="text-primary mb-2">Computer Science</p>
+                    <p class="text-muted small mb-3">10+ years in AI & ML</p>
+                    <div class="d-flex justify-content-center gap-3">
+                        <a href="#" class="text-muted"><i data-feather="twitter"></i></a>
+                        <a href="#" class="text-muted"><i data-feather="linkedin"></i></a>
+                        <a href="#" class="text-muted"><i data-feather="github"></i></a>
+                    </div>
+                </div>
+            </div>
+            <!-- Add more instructor cards similarly -->
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials -->
+<section id="testimonials" class="py-5 bg-primary bg-opacity-10">
+    <div class="container px-4">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold text-dark mb-3">What Our Students Say</h2>
+            <p class="lead text-muted">
+                Hear from thousands of students who transformed their careers
+            </p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm p-4 h-100">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="me-3">
+                            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" 
+                                 class="rounded-circle" width="50" height="50" alt="Student">
+                        </div>
+                        <div>
+                            <h6 class="fw-semibold">Alex Thompson</h6>
+                            <small class="text-muted">Software Engineer</small>
+                        </div>
+                    </div>
+                    <p class="text-muted">
+                        "The Python course completely changed my career trajectory. Within 6 months, I landed my dream job!"
+                    </p>
+                    <div class="d-flex">
+                        <i data-feather="star" class="text-warning"></i>
+                        <i data-feather="star" class="text-warning"></i>
+                        <i data-feather="star" class="text-warning"></i>
+                        <i data-feather="star" class="text-warning"></i>
+                        <i data-feather="star" class="text-warning"></i>
+                    </div>
+                </div>
+            </div>
+            <!-- Add more testimonials -->
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-5 bg-primary text-white text-center">
+    <div class="container px-4">
+        <h2 class="display-5 fw-bold mb-4">Ready to Start Learning?</h2>
+        <p class="lead mb-4">
+            Join over 500,000 students who have transformed their careers
+        </p>
+        <a href="{% url 'register' %}" class="btn btn-light px-4 py-3 fw-semibold">
+            Get Started for Free
+        </a>
+    </div>
+</section>
+
+<style>
+    .course-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+    }
+    .instructor-card:hover img {
+        transform: scale(1.05);
+    }
+    .hover-shadow:hover {
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        transform: translateY(-2px);
+    }
+    .animate-fade-in {
+        animation: fadeIn 1s ease-in-out;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    .font-poppins { font-family: 'Poppins', sans-serif; }
+</style>
+{% endblock %}

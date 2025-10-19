@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}{% if action == 'Create' %}Create{% else %}Edit{% endif %} Course - EduSmart{% endblock %}
+
+{% block content %}
+<div class="container px-4 py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0">
+                    <h2 class="fw-bold mb-0">
+                        {% if action == 'Create' %}
+                            <i data-feather="plus-circle" class="me-2"></i>Create New Course
+                        {% else %}
+                            <i data-feather="edit-3" class="me-2"></i>Edit Course
+                        {% endif %}
+                    </h2>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="row g-4">
+                            <div class="col-md-8">
+                                {{ form.title|as_crispy_field }}
+                                {{ form.description|as_crispy_field }}
+                                {{ form.short_description|as_crispy_field }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ form.thumbnail|as_crispy_field }}
+                                {{ form.category|as_crispy_field }}
+                                {{ form.level|as_crispy_field }}
+                            </div>
+                        </div>
+                        
+                        <div class="row g-4 mt-4">
+                            <div class="col-md-6">
+                                {{ form.price|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.duration|as_crispy_field }}
+                            </div>
+                            <div class="col-12">
+                                {{ form.is_published|as_crispy_field }}
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-end gap-3 mt-4">
+                            <a href="{% url 'course_list' %}" class="btn btn-outline-secondary">
+                                <i data-feather="arrow-left" class="me-2"></i>Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                {% if action == 'Create' %}
+                                    <i data-feather="save" class="me-2"></i>Create Course
+                                {% else %}
+                                    <i data-feather="save" class="me-2"></i>Update Course
+                                {% endif %}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

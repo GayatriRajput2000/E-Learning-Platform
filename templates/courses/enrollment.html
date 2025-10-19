@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Enrollment Successful - EduSmart{% endblock %}
+
+{% block content %}
+<div class="container px-4 py-5 text-center">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-5">
+                    <div class="text-success mb-4">
+                        <i data-feather="check-circle" class="display-1 text-success"></i>
+                    </div>
+                    <h2 class="fw-bold mb-3">Enrollment Successful!</h2>
+                    <p class="lead text-muted mb-4">
+                        You've successfully enrolled in the course. Start learning now!
+                    </p>
+                    
+                    <div class="alert alert-info">
+                        <i data-feather="info" class="me-2"></i>
+                        <strong>Welcome!</strong> You now have full access to all course materials, lessons, and quizzes.
+                    </div>
+                    
+                    <div class="d-grid gap-3 mt-4">
+                        <a href="{% url 'course_lessons' course.id %}" class="btn btn-primary btn-lg">
+                            <i data-feather="play" class="me-2"></i>Start Learning
+                        </a>
+                        <a href="{% url 'my_courses' %}" class="btn btn-outline-primary btn-lg">
+                            <i data-feather="book" class="me-2"></i>My Courses
+                        </a>
+                        <a href="{{ course.get_absolute_url }}" class="btn btn-outline-secondary btn-lg">
+                            <i data-feather="eye" class="me-2"></i>View Course Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Course Preview -->
+            <div class="card border-0 shadow-sm mt-4">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-3">{{ course.title }}</h5>
+                    <p class="text-muted">{{ course.short_description }}</p>
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted">
+                            <i data-feather="clock" class="me-1"></i>{{ course.duration }}
+                        </span>
+                        <span class="badge bg-primary">{{ course.level|title }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
