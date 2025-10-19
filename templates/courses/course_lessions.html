@@ -133,7 +133,7 @@ document.querySelectorAll('.start-lesson').forEach(btn => {
         `;
         
         // Mark as completed
-        fetch(`/update-progress/${lessonId}/`, {
+        fetch(`/update-progress/₹{lessonId}/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

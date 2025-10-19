@@ -93,7 +93,7 @@
                                 <small class="text-muted">{{ course.instructor.first_name }}</small>
                             </div>
                             {% if course.price > 0 %}
-                                <span class="text-primary fw-bold">${{ course.price }}</span>
+                                <span class="text-primary fw-bold">₹{{ course.price }}</span>
                             {% else %}
                                 <span class="badge bg-success">Free</span>
                             {% endif %}
